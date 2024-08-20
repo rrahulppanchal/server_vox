@@ -28,15 +28,15 @@ public class UserController {
     final JwtUtil jwtUtil;
 
     @Autowired
-    public UserController(UsersService userService, UserDetailsServiceImpl userDetailsService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public UserController(UsersService userService, UserDetailsServiceImpl userDetailsService,
+            AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userService = userService;
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
 
-
-    @PostMapping(path = "v3/auth/create-user")
+    @PostMapping(path = "v0/auth/create-user")
     public ResponseEntity<?> createUser(@Valid @RequestBody UsersDTO userDTO) {
         return userService.createUsers(userDTO);
     }
@@ -58,7 +58,7 @@ public class UserController {
             response.put("token", jwt);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Login failed miserably ??", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Login failed ??", HttpStatus.BAD_REQUEST);
         }
 
     }
