@@ -11,6 +11,7 @@ public class ContactLogsDTO {
     private String title;
     private String description;
     private int actionId;
+    private Long contactId;
     private LocalDateTime createdAt;
 
 }

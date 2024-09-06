@@ -8,7 +8,6 @@ import com.emplmgt.employee_management.utils.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,15 +26,15 @@ public class UserController {
     final JwtUtil jwtUtil;
 
     @Autowired
-    public UserController(UsersService userService, UserDetailsServiceImpl userDetailsService,
-            AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public UserController(UsersService userService, UserDetailsServiceImpl userDetailsService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userService = userService;
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping(path = "v0/auth/create-user")
+
+    @PostMapping(path = "v3/auth/create-user")
     public ResponseEntity<?> createUser(@Valid @RequestBody UsersDTO userDTO) {
         return userService.createUsers(userDTO);
     }
@@ -44,6 +42,15 @@ public class UserController {
     @GetMapping(path = "v0/test")
     public ResponseEntity<?> getAll() {
         return new ResponseEntity<>("test", HttpStatus.OK);
+    }
+
+    @GetMapping(path = "v1/user/options")
+    public ResponseEntity<?> getUserOptions() {
+        try {
+            return userService.getUserOption();
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error:  " + e, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping(path = "v0/auth/login")

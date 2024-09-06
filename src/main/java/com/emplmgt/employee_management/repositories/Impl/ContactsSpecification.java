@@ -22,17 +22,12 @@ public class ContactsSpecification {
         return (Root<ContactsEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            // Handle isDeleted filter
             if (dto.getIsDeleted() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("isDeleted"), dto.getIsDeleted()));
             }
 
-            // Filter by `isContact`
-            // if (dto.getIsContact() != null) {
-            // predicates.add(criteriaBuilder.equal(root.get("isContact"),
-            // dto.getIsContact()));
-            // }
-
-            // Add more filters based on the DTO fields
+            // Handle status filters
             ContactsQueryDTO.StatusDTO status = dto.getStatus();
             if (status != null) {
                 addStatusPredicates(status, root, criteriaBuilder, predicates);
@@ -53,20 +48,16 @@ public class ContactsSpecification {
         };
     }
 
-    private static void addStatusPredicates(ContactsQueryDTO.StatusDTO status, Root<ContactsEntity> root,
-            CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
-        // if (status.getActive() != null) {
-        // predicates.add(criteriaBuilder.equal(root.get("isActive"),
-        // status.getActive()));
-        // }
-        // if (status.getFollowUp() != null) {
-        // predicates.add(criteriaBuilder.equal(root.get("isFollowUp"),
-        // status.getFollowUp()));
-        // }
-        // if (status.getNoAction() != null) {
-        // predicates.add(criteriaBuilder.equal(root.get("isNoAction"),
-        // status.getNoAction()));
-        // }
+    private static void addStatusPredicates(ContactsQueryDTO.StatusDTO status, Root<ContactsEntity> root, CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
+//        if (status.getActive() != null) {
+//            predicates.add(criteriaBuilder.equal(root.get("isActive"), status.getActive()));
+//        }
+//        if (status.getFollowUp() != null) {
+//            predicates.add(criteriaBuilder.equal(root.get("isFollowUp"), status.getFollowUp()));
+//        }
+//        if (status.getNoAction() != null) {
+//            predicates.add(criteriaBuilder.equal(root.get("isNoAction"), status.getNoAction()));
+//        }
         if (status.getVerified() != null) {
             predicates.add(criteriaBuilder.equal(root.get("isVerified"), status.getVerified()));
         }
@@ -78,8 +69,7 @@ public class ContactsSpecification {
         }
     }
 
-    private static void addDatePredicates(ContactsQueryDTO.DatesDTO dates, Root<ContactsEntity> root,
-            CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
+    private static void addDatePredicates(ContactsQueryDTO.DatesDTO dates, Root<ContactsEntity> root, CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
         LocalDateTime now = LocalDateTime.now();
         LocalDate today = LocalDate.now();
 
@@ -105,8 +95,7 @@ public class ContactsSpecification {
         }
     }
 
-    private static void addDatePredicate(Root<ContactsEntity> root, CriteriaBuilder criteriaBuilder,
-            List<Predicate> predicates, String createdAtField, String updatedAtField, LocalDateTime dateTime) {
+    private static void addDatePredicate(Root<ContactsEntity> root, CriteriaBuilder criteriaBuilder, List<Predicate> predicates, String createdAtField, String updatedAtField, LocalDateTime dateTime) {
         Timestamp timestamp = Timestamp.valueOf(dateTime);
         predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(createdAtField), timestamp));
         predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(updatedAtField), timestamp));

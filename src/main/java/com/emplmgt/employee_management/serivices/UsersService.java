@@ -1,6 +1,7 @@
 package com.emplmgt.employee_management.serivices;
 
 import com.emplmgt.employee_management.dto.UsersDTO;
+import com.emplmgt.employee_management.dto.options.UsersOptionsDTO;
 import com.emplmgt.employee_management.entities.UsersEntity;
 import com.emplmgt.employee_management.mappers.UsersMapper;
 import com.emplmgt.employee_management.repositories.UsersRepository;
@@ -48,6 +49,15 @@ public class UsersService {
             return new ResponseEntity<>("Something went wrong while creating user, try again ??", HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    public ResponseEntity<?> getUserOption(){
+        try {
+            List<UsersOptionsDTO> userCombo = userRepository.findAllActiveUsers();
+            return new ResponseEntity<>(userCombo, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Something went wrong while creating user, try again ??", HttpStatus.BAD_REQUEST);
+        }
     }
 
 //    public UsersDTO getUser(Long id) {

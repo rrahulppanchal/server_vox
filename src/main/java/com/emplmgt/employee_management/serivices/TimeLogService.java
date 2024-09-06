@@ -1,22 +1,21 @@
 package com.emplmgt.employee_management.serivices;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.security.core.Authentication;
-
-import java.util.List;
-import java.util.Map;
-import java.time.Duration;
 import com.emplmgt.employee_management.dto.TimeLogDTO;
-import com.emplmgt.employee_management.dto.TimeLogProjection;
 import com.emplmgt.employee_management.entities.TimeLogEntity;
 import com.emplmgt.employee_management.enums.TimeLog;
+import com.emplmgt.employee_management.dto.TimeLogProjection;
 import com.emplmgt.employee_management.repositories.TimeLogRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class TimeLogService {
@@ -66,7 +65,8 @@ public class TimeLogService {
             return ResponseEntity.ok().body(Map.of(
                     "timeData", timeData,
                     "totalWorkingSeconds", totalWorkingDuration.getSeconds(),
-                    "active", active));
+                    "active", active
+            ));
         } catch (Exception e) {
             return new ResponseEntity<>("Error: e", HttpStatus.BAD_REQUEST);
         }
@@ -92,7 +92,10 @@ public class TimeLogService {
                 resMessage = "Time logger stopped.";
             }
 
-            return new ResponseEntity<>(resMessage, HttpStatus.OK);
+            return new ResponseEntity<>(Map.of(
+                    "status", timeLogDTO.getAction(),
+                    "message", resMessage
+            ), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error: ", HttpStatus.BAD_REQUEST);
         }

@@ -1,6 +1,5 @@
 package com.emplmgt.employee_management.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,13 +19,11 @@ public class ContactsLogsEntity {
     private String description;
     @Column(name = "action_id")
     private int actionId;
+    @Column(name = "contact_id")
+    private Long contactId;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @ManyToOne
-    @JoinColumn(name = "contact_id")
-    @JsonBackReference
-    private ContactsEntity contactsEntity;
 
     @PrePersist
     protected void onCreate() {

@@ -1,21 +1,16 @@
 package com.emplmgt.employee_management.entities;
 
-import java.time.LocalDateTime;
-
 import com.emplmgt.employee_management.enums.TimeLog;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tbl_time_log")
 @Data
 public class TimeLogEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
@@ -23,4 +18,5 @@ public class TimeLogEntity {
     private LocalDateTime entry;
     private String userEmail;
     private TimeLog action;
+
 }

@@ -6,11 +6,12 @@ import com.emplmgt.employee_management.entities.ContactsEntity;
 import com.emplmgt.employee_management.entities.ContactsLogsEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {ContactMapper.class})
+@Mapper(componentModel = "spring", uses = {ContactMapper.class}, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ContactMapper {
 
     ContactMapper INSTANCE = Mappers.getMapper(ContactMapper.class);
@@ -36,5 +37,4 @@ public interface ContactMapper {
 
     @Mapping(target = "entity.id")
     List<ContactsEntity> toLogsEntities(List<ContactLogsDTO> contactsDTO);
-
 }

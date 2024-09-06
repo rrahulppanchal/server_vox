@@ -4,10 +4,11 @@ import com.emplmgt.employee_management.dto.UsersDTO;
 import com.emplmgt.employee_management.entities.UsersEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 
-@Mapper(componentModel = "spring", uses = {UsersMapper.class})
+@Mapper(componentModel = "spring", uses = {UsersMapper.class}, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UsersMapper {
 
     UsersMapper INSTANCE = Mappers.getMapper(UsersMapper.class);
@@ -17,4 +18,5 @@ public interface UsersMapper {
 
     @Mapping(target = "entity.id")
     UsersEntity toEntity(UsersDTO usersDTO);
+
 }

@@ -23,7 +23,7 @@ public class ContactsQueryDTO {
         private Boolean noAction = false;
         private Boolean verified = false;
         private Boolean unVerified = false;
-        private Boolean inActive = false;
+        private Boolean isActive = false;
     }
 
     @Data
