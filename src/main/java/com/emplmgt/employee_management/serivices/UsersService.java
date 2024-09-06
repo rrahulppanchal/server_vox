@@ -46,62 +46,68 @@ public class UsersService {
             userRepository.save(user);
             return new ResponseEntity<>("User has been created successfully !!", HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>("Something went wrong while creating user, try again ??", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Something went wrong while creating user, try again ??",
+                    HttpStatus.BAD_REQUEST);
         }
 
     }
 
-    public ResponseEntity<?> getUserOption(){
+    public ResponseEntity<?> getUserOption() {
         try {
             List<UsersOptionsDTO> userCombo = userRepository.findAllActiveUsers();
             return new ResponseEntity<>(userCombo, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>("Something went wrong while creating user, try again ??", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Something went wrong while creating user, try again ??",
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
-//    public UsersDTO getUser(Long id) {
-//        try {
-//            UsersEntity data = userRepository.getById(id);
-//            return UsersMapper.toDTO(data);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-//    public List<UsersDTO> getUsers() {
-//        List<UsersEntity> users = userRepository.findAll();
-//        return users.stream()
-//                .map(UsersMapper::toDTO)
-//                .collect(Collectors.toList());
-//    }
-//
-//    public UsersDTO updateUser (UsersDTO userDTO) {
-//        try {
-//            UsersEntity existingUser = userRepository.findById(userDTO.getId())
-//                    .orElseThrow(() -> new IllegalArgumentException("User not found with name: " + userDTO.getName()));
-//
-//            existingUser.setUserName(userDTO.getUserName());
-//            existingUser.setEmail(userDTO.getEmail());
-//            existingUser.setName(userDTO.getName());
-//            existingUser.setActive(userDTO.isActive());
-//
-//            UsersEntity updatedUser = userRepository.save(existingUser);
-//
-//            return UsersMapper.toDTO(updatedUser);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-//    public boolean deleteUser(Long userId) {
-//        UsersEntity existingUser = userRepository.findById(userId)
-//                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
-//
-//        userRepository.delete(existingUser);
-//
-//        return !userRepository.existsById(userId);
-//    }
+    public UsersDTO getUser(String email) {
+        try {
+            UsersEntity data = userRepository.findUserByEmail(email);
+            if (data != null) {
+                data.setPassword(null);
+            }
+            return convertToDTO(data);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    // public List<UsersDTO> getUsers() {
+    // List<UsersEntity> users = userRepository.findAll();
+    // return users.stream()
+    // .map(UsersMapper::toDTO)
+    // .collect(Collectors.toList());
+    // }
+    //
+    // public UsersDTO updateUser (UsersDTO userDTO) {
+    // try {
+    // UsersEntity existingUser = userRepository.findById(userDTO.getId())
+    // .orElseThrow(() -> new IllegalArgumentException("User not found with name: "
+    // + userDTO.getName()));
+    //
+    // existingUser.setUserName(userDTO.getUserName());
+    // existingUser.setEmail(userDTO.getEmail());
+    // existingUser.setName(userDTO.getName());
+    // existingUser.setActive(userDTO.isActive());
+    //
+    // UsersEntity updatedUser = userRepository.save(existingUser);
+    //
+    // return UsersMapper.toDTO(updatedUser);
+    // } catch (Exception e) {
+    // throw new RuntimeException(e);
+    // }
+    // }
+    //
+    // public boolean deleteUser(Long userId) {
+    // UsersEntity existingUser = userRepository.findById(userId)
+    // .orElseThrow(() -> new IllegalArgumentException("User not found with id: " +
+    // userId));
+    //
+    // userRepository.delete(existingUser);
+    //
+    // return !userRepository.existsById(userId);
+    // }
 
 }

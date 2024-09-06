@@ -26,13 +26,13 @@ public class UserController {
     final JwtUtil jwtUtil;
 
     @Autowired
-    public UserController(UsersService userService, UserDetailsServiceImpl userDetailsService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public UserController(UsersService userService, UserDetailsServiceImpl userDetailsService,
+            AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userService = userService;
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
-
 
     @PostMapping(path = "v3/auth/create-user")
     public ResponseEntity<?> createUser(@Valid @RequestBody UsersDTO userDTO) {
@@ -57,13 +57,13 @@ public class UserController {
     public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
 
         try {
-            Map<String, String> response = new HashMap<>();
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail(), userLoginDTO.getPassword()));
             UserDetails userDetail = userDetailsService.loadUserByUsername(userLoginDTO.getEmail());
             String jwt = jwtUtil.generateToken(userDetail.getUsername());
-            response.put("token", jwt);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            UsersDTO usersData = this.userService.getUser(userDetail.getUsername());
+            usersData.setToken(jwt);
+            return new ResponseEntity<>(usersData, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Login failed ??", HttpStatus.BAD_REQUEST);
         }
