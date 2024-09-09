@@ -9,4 +9,6 @@ public interface ContactsRepository extends JpaRepository<ContactsEntity, Long>,
 
     ContactsEntity findByIdAndIsDeletedFalse(@Param("id") Long id);
 
+    ContactsEntity findByIdAndAssignedToAndIsDeletedFalse(@Param("id") Long id, @Param("assignedTo") int assignedToId);
+
 }

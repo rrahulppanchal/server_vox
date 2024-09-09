@@ -2,6 +2,9 @@ package com.emplmgt.employee_management.repositories.Impl;
 
 import com.emplmgt.employee_management.dto.ContactsQueryDTO;
 import com.emplmgt.employee_management.entities.ContactsEntity;
+import com.emplmgt.employee_management.entities.UsersEntity;
+import com.emplmgt.employee_management.enums.UserRole;
+
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -18,9 +21,13 @@ import java.util.List;
 
 public class ContactsSpecification {
 
-    public static Specification<ContactsEntity> byCriteria(ContactsQueryDTO dto) {
+    public static Specification<ContactsEntity> byCriteria(ContactsQueryDTO dto, UsersEntity usersEntity) {
         return (Root<ContactsEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+
+            if (usersEntity.getUserRole() != UserRole.ADMIN) {
+                predicates.add(criteriaBuilder.equal(root.get("assignedTo"), usersEntity.getId()));
+            }
 
             // Handle isDeleted filter
             if (dto.getIsDeleted() != null) {
@@ -48,16 +55,20 @@ public class ContactsSpecification {
         };
     }
 
-    private static void addStatusPredicates(ContactsQueryDTO.StatusDTO status, Root<ContactsEntity> root, CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
-//        if (status.getActive() != null) {
-//            predicates.add(criteriaBuilder.equal(root.get("isActive"), status.getActive()));
-//        }
-//        if (status.getFollowUp() != null) {
-//            predicates.add(criteriaBuilder.equal(root.get("isFollowUp"), status.getFollowUp()));
-//        }
-//        if (status.getNoAction() != null) {
-//            predicates.add(criteriaBuilder.equal(root.get("isNoAction"), status.getNoAction()));
-//        }
+    private static void addStatusPredicates(ContactsQueryDTO.StatusDTO status, Root<ContactsEntity> root,
+            CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
+        // if (status.getActive() != null) {
+        // predicates.add(criteriaBuilder.equal(root.get("isActive"),
+        // status.getActive()));
+        // }
+        // if (status.getFollowUp() != null) {
+        // predicates.add(criteriaBuilder.equal(root.get("isFollowUp"),
+        // status.getFollowUp()));
+        // }
+        // if (status.getNoAction() != null) {
+        // predicates.add(criteriaBuilder.equal(root.get("isNoAction"),
+        // status.getNoAction()));
+        // }
         if (status.getVerified() != null) {
             predicates.add(criteriaBuilder.equal(root.get("isVerified"), status.getVerified()));
         }
@@ -69,7 +80,8 @@ public class ContactsSpecification {
         }
     }
 
-    private static void addDatePredicates(ContactsQueryDTO.DatesDTO dates, Root<ContactsEntity> root, CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
+    private static void addDatePredicates(ContactsQueryDTO.DatesDTO dates, Root<ContactsEntity> root,
+            CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
         LocalDateTime now = LocalDateTime.now();
         LocalDate today = LocalDate.now();
 
@@ -95,7 +107,8 @@ public class ContactsSpecification {
         }
     }
 
-    private static void addDatePredicate(Root<ContactsEntity> root, CriteriaBuilder criteriaBuilder, List<Predicate> predicates, String createdAtField, String updatedAtField, LocalDateTime dateTime) {
+    private static void addDatePredicate(Root<ContactsEntity> root, CriteriaBuilder criteriaBuilder,
+            List<Predicate> predicates, String createdAtField, String updatedAtField, LocalDateTime dateTime) {
         Timestamp timestamp = Timestamp.valueOf(dateTime);
         predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(createdAtField), timestamp));
         predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(updatedAtField), timestamp));

@@ -1,5 +1,6 @@
 package com.emplmgt.employee_management.controllers;
 
+import com.emplmgt.employee_management.dto.ChangeAssigneeDTO;
 import com.emplmgt.employee_management.dto.ContactsDTO;
 import com.emplmgt.employee_management.dto.ContactsQueryDTO;
 import com.emplmgt.employee_management.serivices.ContactsService;
@@ -34,6 +35,21 @@ public class ContactsController {
     @PostMapping(path = "/all")
     public ResponseEntity<?> getContacts(@RequestBody ContactsQueryDTO contactsQueryDTO) {
         return contactsService.getContacts(contactsQueryDTO);
+    }
+
+    @PutMapping(path = "/update")
+    public ResponseEntity<?> changeAssignee(@RequestBody ContactsDTO contactsDTO) {
+        return contactsService.updateContact(contactsDTO);
+    }
+
+    @PutMapping(path = "/assign-to")
+    public ResponseEntity<?> updateContact(@RequestBody ChangeAssigneeDTO changeAssigneeDto) {
+        return contactsService.changeAssignee(changeAssigneeDto);
+    }
+
+    @PutMapping(path = "/action")
+    public ResponseEntity<?> actionChanges(@RequestBody ChangeAssigneeDTO changeAssigneeDto) {
+        return contactsService.contactAction(changeAssigneeDto);
     }
 
     @PostMapping(path = "/upload/csv")
