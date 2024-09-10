@@ -7,6 +7,7 @@ import com.emplmgt.employee_management.dto.ContactsQueryDTO;
 import com.emplmgt.employee_management.entities.ContactsEntity;
 import com.emplmgt.employee_management.entities.ContactsLogsEntity;
 import com.emplmgt.employee_management.entities.UsersEntity;
+import com.emplmgt.employee_management.enums.NotificationCategory;
 import com.emplmgt.employee_management.enums.Status;
 import com.emplmgt.employee_management.enums.UserRole;
 import com.emplmgt.employee_management.mappers.ContactMapper;
@@ -39,17 +40,22 @@ public class ContactsService {
     final ContactsRepository contactsRepository;
     final ContactLogsRepository contactLogsRepository;
     final UsersRepository userRepository;
+    private final EmailService emailService;
+    private final NotificationService notificationService;
     private static final Logger log = LoggerFactory.getLogger(ContactsService.class);
 
     final ContactMapper contactMapper;
 
     public ContactsService(
             ContactsRepository contactsRepository, ContactLogsRepository contactLogsRepository,
-            UsersRepository userRepository, ContactMapper contactMapper) {
+            UsersRepository userRepository, ContactMapper contactMapper, EmailService emailService,
+            NotificationService notificationService) {
         this.contactsRepository = contactsRepository;
         this.contactLogsRepository = contactLogsRepository;
         this.userRepository = userRepository;
         this.contactMapper = contactMapper;
+        this.emailService = emailService;
+        this.notificationService = notificationService;
     }
 
     public ContactsDTO convertToDTO(ContactsEntity contactsEntity) {
@@ -87,7 +93,7 @@ public class ContactsService {
                 logData.setDescription(description);
                 logData.setTitle(title);
                 logData.setContactId(element.getId());
-                logData.setActionId(0);
+                logData.setActionId(Math.toIntExact(userDetails.getId()));
                 createLog(logData);
             });
 
@@ -118,7 +124,7 @@ public class ContactsService {
                     logData.setDescription(description);
                     logData.setTitle(title);
                     logData.setContactId(savedData.getId());
-                    logData.setActionId(0);
+                    logData.setActionId(Math.toIntExact(userDetails.getId()));
                     createLog(logData);
                 }
             }
@@ -144,6 +150,7 @@ public class ContactsService {
                 logData.setDescription(description);
                 logData.setTitle(title);
                 logData.setContactId(contact.getId());
+                logData.setActionId(Math.toIntExact(userDetails.getId()));
                 createLog(logData);
             }
 
@@ -179,7 +186,11 @@ public class ContactsService {
                             assignedByUser.getFirstName(), assignedByUser.getLastName(), assignedToUser.getFirstName(),
                             assignedToUser.getLastName()));
                     logData.setContactId(contact.getId());
+                    logData.setActionId(Math.toIntExact(assignedByUser.getId()));
                     createLog(logData);
+                    notificationService.sendNotification(contact.getId(), assignedToUser.getId(),
+                            assignedByUser.getId(), "Contact assigned to you.", logData.getDescription(),
+                            NotificationCategory.CONTACT);
 
                 });
 
@@ -208,11 +219,14 @@ public class ContactsService {
                     String prev_status = getStatusString(contact.getStatus());
                     String status = getStatusString(changeAssigneeDTO.getStatus());
                     String title = "Status updated ";
-                    String description = assignedByUser.getFirstName() + " " + assignedByUser.getLastName() + " "
-                            + "changed the status of this contact from" + " " + prev_status + " " + status;
+                    String description = String.format("%s %s changed the status of this contact from %s to %s",
+                            assignedByUser.getFirstName(),
+                            assignedByUser.getLastName(),
+                            prev_status,
+                            status);
                     logData.setDescription(description);
                     logData.setTitle(title);
-                    logData.setContactId(assignedByUser.getId());
+                    logData.setContactId(element);
                     contact.setStatus(changeAssigneeDTO.getStatus());
                     createLog(logData);
                 }
@@ -223,8 +237,9 @@ public class ContactsService {
                             + "changed the qualification status of this contact from contact to lead.";
                     logData.setDescription(description);
                     logData.setTitle(title);
-                    logData.setContactId(assignedByUser.getId());
+                    logData.setContactId(element);
                     contact.setQualified(changeAssigneeDTO.getQualified());
+                    logData.setActionId(Math.toIntExact(assignedByUser.getId()));
                     createLog(logData);
                 }
                 this.contactsRepository.save(contact);
