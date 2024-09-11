@@ -19,6 +19,7 @@ public class UsersDTO {
     private String token;
     private String firstName;
     private String lastName;
+    private String description;
     private String phone;
     private UserRole userRole;
     private boolean isActive;

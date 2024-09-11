@@ -37,10 +37,6 @@ public class NotificationEntity {
     private boolean read = false;
 
     @Column(name = "time", nullable = false)
-    private LocalDateTime timestamp;
+    private LocalDateTime timestamp = LocalDateTime.now();
 
-    @PrePersist
-    public void prePersist() {
-        this.timestamp = LocalDateTime.now();
-    }
 }

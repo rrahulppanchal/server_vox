@@ -310,7 +310,7 @@ public class ContactsService {
         }
     }
 
-    private void createLog(ContactsLogsEntity contactsLogsEntity) {
+    public void createLog(ContactsLogsEntity contactsLogsEntity) {
         contactLogsRepository.save(contactsLogsEntity);
     }
 
