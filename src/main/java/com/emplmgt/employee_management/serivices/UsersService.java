@@ -8,6 +8,9 @@ import com.emplmgt.employee_management.enums.UserRole;
 import com.emplmgt.employee_management.mappers.UsersMapper;
 import com.emplmgt.employee_management.repositories.UsersRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -79,9 +82,10 @@ public class UsersService {
         }
     }
 
-    public ResponseEntity<?> getUsers() {
+    public ResponseEntity<?> getUsers(String search, int page, int size) {
         try {
-            List<UsersEntity> usersData = userRepository.findAll();
+            Pageable pageable = PageRequest.of(page, size);
+            Page<UsersEntity> usersData = userRepository.searchUsers(search, pageable);
             for (UsersEntity user : usersData) {
                 user.setPassword(null);
             }

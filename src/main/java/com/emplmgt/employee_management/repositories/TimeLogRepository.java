@@ -11,4 +11,7 @@ import java.util.List;
 public interface TimeLogRepository extends JpaRepository<TimeLogEntity, Long> {
     @Query("SELECT c.entry AS entry, c.action AS action FROM TimeLogEntity c WHERE c.userEmail = :userEmail AND c.entry BETWEEN :startDate AND :endDate")
     List<TimeLogProjection> findByEmail(String userEmail, LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("SELECT c.entry AS entry, c.action AS action, c.userEmail AS email FROM TimeLogEntity c WHERE c.entry BETWEEN :startDate AND :endDate")
+    List<TimeLogProjection> findToday(LocalDateTime startDate, LocalDateTime endDate);
 }

@@ -42,9 +42,11 @@ public class UserController {
     }
 
     @GetMapping(path = "v3/admin/get-users")
-    public ResponseEntity<?> getAllUsers() {
+    public ResponseEntity<?> getAllUsers(@RequestParam String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         try {
-            return userService.getUsers();
+            return userService.getUsers(search, page, size);
         } catch (Exception e) {
             return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
